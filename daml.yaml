@@ -1,7 +1,6 @@
 sdk-version: 1.2.0
 name: habit-tracker
 source: daml
-init-script: Setup:initialize
 parties:
   - Alice
   - Bob
@@ -11,4 +10,5 @@ dependencies:
   - daml-stdlib
   - daml-script
 sandbox-options:
+  - --ledgerid=habit-tracker
   - --wall-clock-time
