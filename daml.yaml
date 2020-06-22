@@ -1,0 +1,14 @@
+sdk-version: 1.2.0
+name: habit-tracker
+source: daml
+init-script: Setup:initialize
+parties:
+  - Alice
+  - Bob
+version: 0.0.1
+dependencies:
+  - daml-prim
+  - daml-stdlib
+  - daml-script
+sandbox-options:
+  - --wall-clock-time
