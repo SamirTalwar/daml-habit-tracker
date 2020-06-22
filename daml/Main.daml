@@ -1,5 +1,7 @@
 module Main where
 
+import DA.Date
+
 template Habit
   with
     owner : Party
@@ -13,6 +15,11 @@ template Habit
         with
           dateCompleted : Date
         do
+          today <- toDateUTC <$> getTime
+          let yesterday = addDays today (-1)
+          assertMsg "You can only record a habit for today or yesterday." $
+            dateCompleted == today || dateCompleted == yesterday
+
           create Recording with
             habit = this
             dateCompleted
