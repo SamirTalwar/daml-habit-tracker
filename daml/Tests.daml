@@ -1,0 +1,24 @@
+module Tests where
+
+import DA.Date
+import DA.Time
+
+import Main
+
+recordHabits = scenario do
+  alice <- getParty "Alice"
+
+  run <- submit alice do
+    create Habit with
+      owner = alice
+      name = "Run"
+
+  submit alice do
+    exercise run Record with
+      timestamp = time (date 2020 Jul 1) 12 0 0
+  submit alice do
+    exercise run Record with
+      timestamp = time (date 2020 Jul 2) 18 0 0
+  submit alice do
+    exercise run Record with
+      timestamp = time (date 2020 Jul 3) 9 0 0
