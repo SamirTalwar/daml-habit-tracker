@@ -11,15 +11,15 @@ template Habit
     controller owner can
       nonconsuming Record : ContractId Recording
         with
-          timestamp : Time
+          dateCompleted : Date
         do
           create Recording with
             habit = this
-            timestamp = timestamp
+            dateCompleted
 
 template Recording
   with
     habit : Habit
-    timestamp : Time
+    dateCompleted : Date
   where
     signatory habit.owner
