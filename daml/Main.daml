@@ -9,9 +9,10 @@ template HabitProposal
     keepingHonest : Party
     name : Text
   where
-    ensure name /= ""
     signatory owner
     observer keepingHonest
+
+    ensure name /= "" && owner /= keepingHonest
 
     controller keepingHonest can
       preconsuming HabitProposal_Accept : ContractId Habit
@@ -27,9 +28,10 @@ template Habit
     keepingHonest : Optional Party
     name : Text
   where
-    ensure name /= ""
     signatory owner
     signatory keepingHonest
+
+    ensure validateHabit this
 
     controller owner can
       nonconsuming Habit_Record : ContractId Recording
@@ -62,6 +64,8 @@ template Recording
     signatory habit.owner
     signatory habit.keepingHonest
 
+    ensure validateHabit habit
+
 template PendingRecording
   with
     habit : Habit
@@ -69,6 +73,8 @@ template PendingRecording
   where
     signatory habit.owner
     signatory habit.keepingHonest
+
+    ensure validateHabit habit
 
     controller habit.keepingHonest can
       preconsuming PendingRecording_Accept : ContractId Recording
@@ -79,6 +85,9 @@ template PendingRecording
       preconsuming PendingRecording_Reject : ()
         do
           return ()
+
+validateHabit : Habit -> Bool
+validateHabit habit = habit.name /= "" && habit.keepingHonest /= Some habit.owner
 
 validateRecording : (CanAbort m, HasTime m) => Date -> m ()
 validateRecording dateCompleted = do

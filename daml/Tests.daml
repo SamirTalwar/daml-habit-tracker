@@ -92,15 +92,34 @@ keepHonestWithPermission = scenario do
   alice <- getParty "Alice"
   bob <- getParty "Bob"
 
-  let habit = Habit with
+  let habitWithHonestyKeeper = Habit with
         owner = alice
         keepingHonest = Some bob
         name = "Bike"
 
+  let habitWithSelfAsHonestyKeeper = Habit with
+        owner = alice
+        keepingHonest = Some alice
+        name = "Bike"
+
   submitMustFail alice do
-    create habit
+    create habitWithHonestyKeeper
+
+  submitMustFail alice do
+    create habitWithSelfAsHonestyKeeper
+
+  submitMustFail alice do
+    create HabitProposal with
+      owner = alice
+      keepingHonest = alice
+      name = "Bike"
 
   submitMustFail alice do
     create Recording with
-      habit
+      habit = habitWithHonestyKeeper
+      dateCompleted = date 2020 Jul 1
+
+  submitMustFail alice do
+    create Recording with
+      habit = habitWithSelfAsHonestyKeeper
       dateCompleted = date 2020 Jul 1
