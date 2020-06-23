@@ -11,7 +11,7 @@ template Habit
     signatory owner
 
     controller owner can
-      nonconsuming Record : ContractId Recording
+      nonconsuming Habit_Record : ContractId Recording
         with
           dateCompleted : Date
         do

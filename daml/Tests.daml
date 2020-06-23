@@ -15,15 +15,15 @@ recordHabits = scenario do
 
   pass <$> subTime (time (date 2020 Jul 1) 12 0 0) =<< getTime
   submit alice do
-    exercise run Record with
+    exercise run Habit_Record with
       dateCompleted = date 2020 Jul 1
   pass <$> subTime (time (date 2020 Jul 2) 9 0 0) =<< getTime
   submit alice do
-    exercise run Record with
+    exercise run Habit_Record with
       dateCompleted = date 2020 Jul 2
   pass <$> subTime (time (date 2020 Jul 3) 18 0 0) =<< getTime
   submit alice do
-    exercise run Record with
+    exercise run Habit_Record with
       dateCompleted = date 2020 Jul 3
 
 recordHabitsRecently = scenario do
@@ -36,14 +36,14 @@ recordHabitsRecently = scenario do
 
   pass <$> subTime (time (date 2020 Jul 3) 9 0 0) =<< getTime
   submit bob do
-    exercise cook Record with
+    exercise cook Habit_Record with
       dateCompleted = date 2020 Jul 3
   submit bob do
-    exercise cook Record with
+    exercise cook Habit_Record with
       dateCompleted = date 2020 Jul 2
   submitMustFail bob do
-    exercise cook Record with
+    exercise cook Habit_Record with
       dateCompleted = date 2020 Jul 1
   submitMustFail bob do
-    exercise cook Record with
+    exercise cook Habit_Record with
       dateCompleted = date 2020 Jul 4
