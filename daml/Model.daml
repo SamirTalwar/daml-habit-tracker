@@ -1,4 +1,4 @@
-module Main where
+module Model where
 
 import DA.Date
 import qualified DA.Optional as Optional

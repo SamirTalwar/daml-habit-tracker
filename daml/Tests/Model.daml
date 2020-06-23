@@ -1,9 +1,9 @@
-module Tests where
+module Tests.Model where
 
 import DA.Date
 import DA.Time
 
-import Main
+import Model
 
 recordHabits = scenario do
   alice <- getParty "Alice"
