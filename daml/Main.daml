@@ -1,26 +1,56 @@
 module Main where
 
 import DA.Date
+import qualified DA.Optional as Optional
 
-template Habit
+template HabitProposal
   with
     owner : Party
+    keepingHonest : Party
     name : Text
   where
     ensure name /= ""
     signatory owner
+    observer keepingHonest
+
+    controller keepingHonest can
+      preconsuming HabitProposal_Accept : ContractId Habit
+        do
+          create Habit with
+            owner
+            keepingHonest = Some keepingHonest
+            name
+
+template Habit
+  with
+    owner : Party
+    keepingHonest : Optional Party
+    name : Text
+  where
+    ensure name /= ""
+    signatory owner
+    signatory keepingHonest
 
     controller owner can
       nonconsuming Habit_Record : ContractId Recording
         with
           dateCompleted : Date
         do
-          today <- toDateUTC <$> getTime
-          let yesterday = addDays today (-1)
-          assertMsg "You can only record a habit for today or yesterday." $
-            dateCompleted == today || dateCompleted == yesterday
-
+          assertMsg "You must keep yourself honest by creating a pending recording." $
+            Optional.isNone keepingHonest
+          validateRecording dateCompleted
           create Recording with
+            habit = this
+            dateCompleted
+
+      nonconsuming Habit_RecordPending : ContractId PendingRecording
+        with
+          dateCompleted : Date
+        do
+          assertMsg "You do not need to create a pending recording." $
+            Optional.isSome keepingHonest
+          validateRecording dateCompleted
+          create PendingRecording with
             habit = this
             dateCompleted
 
@@ -30,3 +60,29 @@ template Recording
     dateCompleted : Date
   where
     signatory habit.owner
+    signatory habit.keepingHonest
+
+template PendingRecording
+  with
+    habit : Habit
+    dateCompleted : Date
+  where
+    signatory habit.owner
+    signatory habit.keepingHonest
+
+    controller habit.keepingHonest can
+      preconsuming PendingRecording_Accept : ContractId Recording
+        do
+          create Recording with
+            habit
+            dateCompleted
+      preconsuming PendingRecording_Reject : ()
+        do
+          return ()
+
+validateRecording : (CanAbort m, HasTime m) => Date -> m ()
+validateRecording dateCompleted = do
+  today <- toDateUTC <$> getTime
+  let yesterday = addDays today (-1)
+  assertMsg "You can only record a habit for today or yesterday." $
+    dateCompleted == today || dateCompleted == yesterday

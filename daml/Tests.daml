@@ -7,10 +7,12 @@ import Main
 
 recordHabits = scenario do
   alice <- getParty "Alice"
+  bob <- getParty "Bob"
 
   run <- submit alice do
     create Habit with
       owner = alice
+      keepingHonest = None
       name = "Run"
 
   pass <$> subTime (time (date 2020 Jul 1) 12 0 0) =<< getTime
@@ -32,6 +34,7 @@ recordHabitsRecently = scenario do
   cook <- submit bob do
     create Habit with
       owner = bob
+      keepingHonest = None
       name = "Cook"
 
   pass <$> subTime (time (date 2020 Jul 3) 9 0 0) =<< getTime
@@ -47,3 +50,57 @@ recordHabitsRecently = scenario do
   submitMustFail bob do
     exercise cook Habit_Record with
       dateCompleted = date 2020 Jul 4
+
+keepHonest = scenario do
+  alice <- getParty "Alice"
+  bob <- getParty "Bob"
+
+  proposal <- submit alice do
+    create HabitProposal with
+      owner = alice
+      keepingHonest = bob
+      name = "Meditate"
+  meditate <- submit bob do
+    exercise proposal HabitProposal_Accept
+
+  do
+    pass <$> subTime (time (date 2020 Jul 1) 12 0 0) =<< getTime
+    recording <- submit alice do
+      exercise meditate Habit_RecordPending with
+        dateCompleted = date 2020 Jul 1
+    submit bob do
+      exercise recording PendingRecording_Accept
+  do
+    pass <$> subTime (time (date 2020 Jul 2) 12 0 0) =<< getTime
+    recording <- submit alice do
+      exercise meditate Habit_RecordPending with
+        dateCompleted = date 2020 Jul 2
+    submit bob do
+      exercise recording PendingRecording_Reject
+  do
+    pass <$> subTime (time (date 2020 Jul 3) 12 0 0) =<< getTime
+    submit alice do
+      exercise meditate Habit_RecordPending with
+        dateCompleted = date 2020 Jul 3
+  do
+    pass <$> subTime (time (date 2020 Jul 4) 12 0 0) =<< getTime
+    submitMustFail alice do
+      exercise meditate Habit_Record with
+        dateCompleted = date 2020 Jul 4
+
+keepHonestWithPermission = scenario do
+  alice <- getParty "Alice"
+  bob <- getParty "Bob"
+
+  let habit = Habit with
+        owner = alice
+        keepingHonest = Some bob
+        name = "Bike"
+
+  submitMustFail alice do
+    create habit
+
+  submitMustFail alice do
+    create Recording with
+      habit
+      dateCompleted = date 2020 Jul 1
