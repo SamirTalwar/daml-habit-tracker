@@ -3,10 +3,10 @@
 
 import React from "react";
 import {Form, List, Button} from "semantic-ui-react";
-import {Model} from "@daml.js/create-daml-app";
+import {Habit} from "./ViewModel";
 
 type Props = {
-  habits: Model.Habit[];
+  habits: {[id: string]: Habit};
   onAddHabit: (name: string) => Promise<void>;
 };
 
@@ -33,11 +33,11 @@ const HabitList: React.FC<Props> = ({habits, onAddHabit}) => {
 
   return (
     <List relaxed>
-      {[...habits]
+      {[...Object.values(habits)]
         .sort((x, y) => x.name.localeCompare(y.name))
         .map(habit => (
           <List.Item key={habit.name}>
-            <List.Icon name="arrow circle right" />
+            <List.Icon name="arrow circle right" color={habit.color} />
             <List.Content>
               <List.Header>{habit.name}</List.Header>
             </List.Content>
