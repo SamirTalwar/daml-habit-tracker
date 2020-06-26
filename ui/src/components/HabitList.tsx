@@ -35,7 +35,7 @@ const HabitList: React.FC<Props> = ({habits, onAddHabit}) => {
     <List relaxed>
       {[...habits]
         .sort((x, y) => x.name.localeCompare(y.name))
-        .map((habit) => (
+        .map(habit => (
           <List.Item key={habit.name}>
             <List.Icon name="arrow circle right" />
             <List.Content>
@@ -51,7 +51,7 @@ const HabitList: React.FC<Props> = ({habits, onAddHabit}) => {
           loading={isSubmitting}
           placeholder="Exercise, cook, meditate, learn…"
           value={newHabit}
-          onChange={(event) => setNewHabit(event.currentTarget.value)}
+          onChange={event => setNewHabit(event.currentTarget.value)}
         />
         <Button type="submit">Make it</Button>
       </Form>

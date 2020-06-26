@@ -20,7 +20,7 @@ const UserList: React.FC<Props> = ({users, onFollow}) => {
     <List divided relaxed>
       {[...users]
         .sort((x, y) => x.username.localeCompare(y.username))
-        .map((user) => (
+        .map(user => (
           <List.Item key={user.username}>
             <List.Icon name="user" />
             <List.Content>
@@ -39,7 +39,7 @@ const UserList: React.FC<Props> = ({users, onFollow}) => {
             <List.List>
               {[...user.following]
                 .sort((x, y) => x.localeCompare(y))
-                .map((userToFollow) => (
+                .map(userToFollow => (
                   <List.Item key={userToFollow}>
                     <List.Content floated="right">
                       <Icon

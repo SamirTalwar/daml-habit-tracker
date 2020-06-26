@@ -46,7 +46,7 @@ const MainView: React.FC = () => {
               </Header>
               <Divider />
               <HabitList
-                habits={habits.map((habit) => habit.payload)}
+                habits={habits.map(habit => habit.payload)}
                 onAddHabit={newHabit}
               />
             </Segment>

@@ -114,7 +114,7 @@ const LoginScreen: React.FC<Props> = ({onLogin}) => {
                   placeholder="Username"
                   value={username}
                   className="test-select-username-field"
-                  onChange={(e) => setUsername(e.currentTarget.value)}
+                  onChange={e => setUsername(e.currentTarget.value)}
                 />
                 <Button
                   primary
