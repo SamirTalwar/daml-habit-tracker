@@ -13,9 +13,9 @@ import {httpBaseUrl, wsBaseUrl} from "../config";
  */
 // APP_BEGIN
 const App: React.FC = () => {
-  const [credentials, setCredentials] = React.useState<
+  const [credentials, setCredentials] = useLocalStorage<
     Credentials | undefined
-  >();
+  >("credentials", undefined);
 
   return credentials ? (
     <DamlLedger
@@ -31,5 +31,24 @@ const App: React.FC = () => {
   );
 };
 // APP_END
+
+function useLocalStorage<S>(
+  key: string,
+  initialValue: S,
+): [S, React.Dispatch<S>] {
+  const [value, setValueState] = React.useState<S>(() => {
+    const json = window.localStorage.getItem(key);
+    return json ? JSON.parse(json) : initialValue;
+  });
+  const setValue: React.Dispatch<S> = (newValue: S) => {
+    setValueState(newValue);
+    if (newValue != null) {
+      window.localStorage.setItem(key, JSON.stringify(newValue));
+    } else {
+      window.localStorage.removeItem(key);
+    }
+  };
+  return [value, setValue];
+}
 
 export default App;
