@@ -63,11 +63,7 @@ const MainView: React.FC = () => {
                 <Header.Content>Calendar</Header.Content>
               </Header>
               <Divider />
-              <Calendar
-                year={now.getFullYear()}
-                month={now.getMonth() + 1}
-                habits={habits}
-              />
+              <Calendar year={now.getFullYear()} month={now.getMonth() + 1} />
             </Segment>
           </Grid.Column>
         </Grid.Row>

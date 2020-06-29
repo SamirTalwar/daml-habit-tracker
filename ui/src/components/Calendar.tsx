@@ -2,10 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import React from "react";
-import {Grid} from "semantic-ui-react";
-import {Model} from "@daml.js/create-daml-app";
-import {useParty, useStreamQuery} from "@daml/react";
-import {Habits} from "./ViewModel";
+import {Table} from "semantic-ui-react";
 
 type CalendarEntry = number | undefined;
 type Month = number;
@@ -16,39 +13,30 @@ const days = ["M", "Tu", "W", "Th", "F", "Sa", "So"];
 type Props = {
   year: Year;
   month: Month;
-  habits: Habits;
 };
 
-const Calendar: React.FC<Props> = ({year, month, habits}) => {
-  // const ledger = useLedger();
-  const username = useParty();
-
-  const recordings = useStreamQuery(
-    Model.Recording,
-    () => ({
-      habit: {owner: username},
-    }),
-    [username, habits],
-  ).contracts;
-  console.log(recordings);
-
+const Calendar: React.FC<Props> = ({year, month}) => {
   const calendar = daysOf(year, month);
 
   return (
-    <Grid centered columns={7}>
-      <Grid.Row>
-        {days.map(day => (
-          <Grid.Column>{day}</Grid.Column>
-        ))}
-      </Grid.Row>
-      {calendar.map(week => (
-        <Grid.Row>
-          {week.map(day => (
-            <Grid.Column>{day}</Grid.Column>
+    <Table columns={7} textAlign="center">
+      <Table.Header>
+        <Table.Row>
+          {days.map(day => (
+            <Table.HeaderCell key={day}>{day}</Table.HeaderCell>
           ))}
-        </Grid.Row>
-      ))}
-    </Grid>
+        </Table.Row>
+      </Table.Header>
+      <Table.Body>
+        {calendar.map(week => (
+          <Table.Row key={week.find(day => day)}>
+            {week.map((day, index) => (
+              <Table.Cell key={index}>{day}</Table.Cell>
+            ))}
+          </Table.Row>
+        ))}
+      </Table.Body>
+    </Table>
   );
 };
 
