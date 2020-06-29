@@ -1,18 +1,10 @@
 // Copyright (c) 2020 Digital Asset (Switzerland) GmbH and/or its affiliates. All rights reserved.
 // SPDX-License-Identifier: Apache-2.0
 
-import React, {useCallback} from "react";
+import React from "react";
 import {Button, Form, Grid, Header, Image, Segment} from "semantic-ui-react";
 import Credentials, {computeCredentials} from "../Credentials";
-import Ledger from "@daml/ledger";
-import {User} from "@daml.js/create-daml-app";
-import {
-  DeploymentMode,
-  deploymentMode,
-  ledgerId,
-  httpBaseUrl,
-  wsBaseUrl,
-} from "../config";
+import {DeploymentMode, deploymentMode, ledgerId} from "../config";
 import {useEffect} from "react";
 
 type Props = {
@@ -25,34 +17,10 @@ type Props = {
 const LoginScreen: React.FC<Props> = ({onLogin}) => {
   const [username, setUsername] = React.useState("");
 
-  const login = useCallback(
-    async (credentials: Credentials) => {
-      try {
-        const ledger = new Ledger({
-          token: credentials.token,
-          httpBaseUrl,
-          wsBaseUrl,
-        });
-        let userContract = await ledger.fetchByKey(
-          User.User,
-          credentials.party,
-        );
-        if (userContract === null) {
-          const user = {username: credentials.party, following: []};
-          userContract = await ledger.create(User.User, user);
-        }
-        onLogin(credentials);
-      } catch (error) {
-        alert(`Unknown error:\n${JSON.stringify(error)}`);
-      }
-    },
-    [onLogin],
-  );
-
   const handleLogin = async (event: React.FormEvent) => {
     event.preventDefault();
     const credentials = computeCredentials(username);
-    await login(credentials);
+    onLogin(credentials);
   };
 
   const handleDablLogin = () => {
@@ -75,8 +43,8 @@ const LoginScreen: React.FC<Props> = ({onLogin}) => {
     }
     url.search = "";
     window.history.replaceState(window.history.state, "", url.toString());
-    login({token, party, ledgerId});
-  }, [login]);
+    onLogin({token, party, ledgerId});
+  }, [onLogin]);
 
   return (
     <Grid textAlign="center" style={{height: "100vh"}} verticalAlign="middle">
