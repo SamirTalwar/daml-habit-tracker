@@ -33,6 +33,9 @@ template Habit
 
     ensure validateHabit this
 
+    key this : Habit
+    maintainer key.owner
+
     controller owner can
       nonconsuming Habit_Record : ContractId Recording
         with

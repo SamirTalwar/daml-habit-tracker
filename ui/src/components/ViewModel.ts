@@ -7,7 +7,9 @@ export type Habit = Model.Habit & {
   color: Color;
 };
 
-export type Habits = {[id: string]: Habit};
+export type Habits = {[name: string]: Habit};
+
+export type Recordings = {[habitName: string]: {[date: string]: boolean}};
 
 const _colors: readonly Color[] = [
   "red",
